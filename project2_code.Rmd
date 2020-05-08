@@ -1,0 +1,31 @@
+---
+title: "Project 4 Code - Hurricane Predictions"
+author: "Margaret Gacheru, Melanie Mayer, Kee-Young Shin, Adina Zhang"
+date: "5/8/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+```
+
+
+Data Cleaning:
+
+```{r}
+dt= read.csv("./hurrican356.csv") %>% 
+  separate(time, into = c("date", "time"), sep = " ") %>% 
+  mutate(time = str_replace(time, "\\)", ""),
+         date = str_replace(date, "\\(", "")) %>% 
+  separate(date, into = c("year", "month", "day"), sep = "-") %>% 
+  separate(time, into = c("time", "temp", "temp2"), sep = ":") %>% 
+  mutate(time = as.numeric(time)) %>% 
+  select(-c(year, temp, temp2)) %>% 
+  group_by(ID) %>% 
+  mutate(t = 1,
+         t = cumsum(t)
+         )
+```
+
