@@ -25,7 +25,9 @@ dt= read.csv("./hurrican356.csv") %>%
   select(-c(year, temp, temp2)) %>% 
   group_by(ID) %>% 
   mutate(t = 1,
-         t = cumsum(t)
-         )
+         t = cumsum(t),
+         diff_lat = Latitude - lag(Latitude, default = NA),
+         diff_long = Longitude - lag(Longitude, default = NA),
+         diff_spd = Wind.kt - lag(Wind.kt, default = NA))
 ```
 

@@ -380,8 +380,10 @@ summary {
   select(-c(year, temp, temp2)) %&gt;% 
   group_by(ID) %&gt;% 
   mutate(t = 1,
-         t = cumsum(t)
-         )</code></pre>
+         t = cumsum(t),
+         diff_lat = Latitude - lag(Latitude, default = NA),
+         diff_long = Longitude - lag(Longitude, default = NA),
+         diff_spd = Wind.kt - lag(Wind.kt, default = NA))</code></pre>
 
 
 
