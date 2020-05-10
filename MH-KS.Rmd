@@ -29,6 +29,7 @@ loglike = function(Y, X, betas, rhos, sigma){
   X = data.matrix(X)
   coef = rbind(betas, rhos)
   mean = X %*% coef
+  # constants removed since they will be canceled out anyway 
   loglik = (-0.5/sigma)*(resp - mean)^2
   return(sum(loglik))
 }
@@ -41,6 +42,43 @@ posteriors = function(Y, X, betas, rhos, sigma) {
   return(rho_p + sigma_p + beta_p + loglik)
 }
 
-
+# create MH algorithm
+mh = function(Y, X, start_b, start_r, start_s, 
+              window_b, window_r, window_s, n){
+  p = length(start_b)
+  r = length(start_r)
+  res_b = start_b
+  res_r = start_r
+  res_s = start_s
+  chain[1] = c(start_b, start_r, start_s)
+  for (i in 2:n){
+    for (j in 1:p) {
+      proposed_b = res_b
+      proposed_b[j] = res_b[j] + (runif(1) - 0.5)*2*window_b[j]
+      numer = posteriors(Y, X, proposed_b, res_r, res_s)
+      denom = posteriors(Y, X, res_b, res_r, res_s)
+      if (log(runif(1)) < numer - denom) {
+        res_b = proposed_b
+      }
+    }
+    for (m in 1:q) {
+      proposed_r = res_r
+      proposed_r[m] = res_r[m] + (runif(1) - 0.5)*2*window_r[m]
+      numer = posteriors(Y, X, res_b, proposed_r, res_s)
+      denom = posteriors(Y, X, res_b, res_r, res_s)
+      if (log(runif(1)) < numer - denom) {
+        res_r = proposed_r
+      } 
+    }
+    proposed_s = rgamma(1, .001/window_s, .001/window_s)
+    numer = posteriors(Y, X, res_b, res_r, proposed_s)
+    denom = posteriors(Y, X, res_b, res_r, res_s)
+    if (log(runif(1)) < numer - denom) {
+      res_s = proposed_s
+    }
+    chain[i] = c(res_b, res_r, res_s)
+  }
+  return(chain)
+}
 ```
 
