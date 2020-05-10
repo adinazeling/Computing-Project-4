@@ -55,15 +55,14 @@ mh = function(Y, X, start_b, start_r, start_s,
   res_b = start_b
   res_r = start_r
   res_s = start_s
-  chain = rep(NA, n)
-  chain[1] = c(start_b, start_r, start_s)
+  chain = c(1, start_b, start_r, start_s)
   for (i in 2:n){
     for (j in 1:p) {
       proposed_b = res_b
       proposed_b[j] = res_b[j] + (runif(1) - 0.5)*2*window_b[j]
       numer = posteriors(Y, X, proposed_b, res_r, res_s)
       denom = posteriors(Y, X, res_b, res_r, res_s)
-      if (log(runif(1)) < numer - denom) {
+      if (log(runif(1)) < (numer - denom)) {
         res_b = proposed_b
       }
     }
@@ -72,17 +71,17 @@ mh = function(Y, X, start_b, start_r, start_s,
       proposed_r[m] = res_r[m] + (runif(1) - 0.5)*2*window_r
       numer = posteriors(Y, X, res_b, proposed_r, res_s)
       denom = posteriors(Y, X, res_b, res_r, res_s)
-      if (log(runif(1)) < numer - denom) {
+      if (log(runif(1)) < (numer - denom)) {
         res_r = proposed_r
-      } 
+      }
     }
     proposed_s = rinvgamma(1, .001*window_s, .001*window_s)
     numer = posteriors(Y, X, res_b, res_r, proposed_s)
     denom = posteriors(Y, X, res_b, res_r, res_s)
-    if (log(runif(1)) < numer - denom) {
+    if (log(runif(1)) < (numer - denom)) {
       res_s = proposed_s
     }
-    chain[i] = c(res_b, res_r, res_s)
+    chain = rbind(chain, c(i, res_b, res_r, res_s))
   }
   return(chain)
 }
@@ -105,7 +104,10 @@ train_hurr = hurricanes_id[train_ind]
 # training and test sets
 train_X = dt %>%
   filter(ID %in% train_hurr) %>%
-  mutate(intercept = 1) %>%
+  mutate(intercept = 1,
+         diff_lat = ifelse(is.na(diff_lat), 0, diff_lat),
+         diff_long = ifelse(is.na(diff_long), 0, diff_long),
+         diff_spd = ifelse(is.na(diff_spd), 0, diff_spd)) %>%
   select(intercept, day, Season, Nature, 
          diff_lat, diff_long, diff_spd, Wind.kt)
 
@@ -130,6 +132,7 @@ set.seed(24)
 chains = mh(train_Y, train_X, start_b = rep(0,7), 
             start_r = 0.6, start_s = 10, window_b = rep(1,7),
             window_r = 0.02, window_s = 150, n = 1000)
+
 
 ```
 
