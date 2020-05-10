@@ -9,20 +9,22 @@ editor_options:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
+library(caret)
+library(lubridate)
 ```
 
 
 Data Cleaning:
 
 ```{r}
-dt= read.csv("./hurrican356.csv") %>% 
+dt = read.csv("./hurrican356.csv") %>% 
   separate(time, into = c("date", "time"), sep = " ") %>% 
   mutate(time = str_replace(time, "\\)", ""),
-         date = str_replace(date, "\\(", "")) %>% 
-  separate(date, into = c("year", "month", "day"), sep = "-") %>% 
+         date = str_replace(date, "\\(", ""),
+         day_of_yr = ymd(date) - ymd(paste0(Season, "-01-01"))) %>% 
   separate(time, into = c("time", "temp", "temp2"), sep = ":") %>% 
   mutate(time = as.numeric(time)) %>% 
-  select(-c(year, temp, temp2)) %>% 
+  select(-c(X, date, temp, temp2)) %>% 
   group_by(ID) %>% 
   mutate(t = 1,
          t = cumsum(t),
@@ -32,5 +34,15 @@ dt= read.csv("./hurrican356.csv") %>%
          Nature = factor(Nature, 
                          levels = c("NR", "DS", "ET", "SS", "TS")),
          Nature = as.numeric(Nature))
+
+```
+
+Split Data:
+
+```{r}
+# Split data into training and test sets
+trainIndex = createDataPartition(dt$Wind.kt, p = 0.8, list = F)
+dt_train = dt[trainIndex,]
+dt_test = dt[-trainIndex,]
 ```
 
