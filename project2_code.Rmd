@@ -18,6 +18,7 @@ Data Cleaning:
 
 ```{r}
 dt = read.csv("./hurrican356.csv") %>% 
+  arrange(-desc(time)) %>% 
   separate(time, into = c("date", "time"), sep = " ") %>% 
   mutate(time = str_replace(time, "\\)", ""),
          date = str_replace(date, "\\(", ""),
@@ -33,7 +34,8 @@ dt = read.csv("./hurrican356.csv") %>%
          diff_spd = Wind.kt - lag(Wind.kt, default = NA),
          Nature = factor(Nature, 
                          levels = c("NR", "DS", "ET", "SS", "TS")),
-         Nature = as.numeric(Nature))
+         Nature = as.numeric(Nature)) %>% 
+  rename(year = Season)
 
 ```
 
