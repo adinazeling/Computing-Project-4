@@ -48,8 +48,6 @@ posteriors = function(Y, X, betas, rhos, sigma) {
 # create MH algorithm
 mh = function(Y, X, start_b, start_r, start_s, 
               window_b, window_r, window_s, n){
-  X = X[-1]
-  Y = Y[-1]
   p = length(start_b)
   r = length(start_r)
   res_b = start_b
@@ -108,7 +106,7 @@ train_X = dt %>%
          diff_lat = ifelse(is.na(diff_lat), 0, diff_lat),
          diff_long = ifelse(is.na(diff_long), 0, diff_long),
          diff_spd = ifelse(is.na(diff_spd), 0, diff_spd)) %>%
-  select(intercept, day, Season, Nature, 
+  select(intercept, day_of_yr, year, Nature, 
          diff_lat, diff_long, diff_spd, Wind.kt)
 
 train_Y = dt %>%
@@ -118,7 +116,7 @@ train_Y = dt %>%
 test_X = dt %>%
   filter(!(ID %in% train_hurr)) %>%
   mutate(intercept = 1) %>%
-  select(intercept, day, Season, Nature, 
+  select(intercept, day_of_yr, year, Nature, 
          diff_lat, diff_long, diff_spd, Wind.kt)
 
 test_Y = dt %>%
