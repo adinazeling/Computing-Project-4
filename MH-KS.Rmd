@@ -7,17 +7,18 @@ output: html_document
 
 ```{r}
 library(msm)
+library(invgamma)
 
 # functions for posteriors
 # use log to make it additive 
 
 rho_prior = function(rho){
   prob = dtnorm(rho, mean = 0.5, sd = sqrt(1/5), lower = 0, upper = 1)
-  return(sum(log(prob)))
+  return(log(prob))
 }
 
 sigma_prior = function(sigma){
-  prob = dgamma(1/sigma, 0.001, 0.001)
+  prob = dinvgamma(1/sigma, 0.001, 0.001)
   return(log(prob))
 }
 
@@ -75,7 +76,7 @@ mh = function(Y, X, start_b, start_r, start_s,
         res_r = proposed_r
       } 
     }
-    proposed_s = rgamma(1, .001/window_s, .001/window_s)
+    proposed_s = rinvgamma(1, .001*window_s, .001*window_s)
     numer = posteriors(Y, X, res_b, res_r, proposed_s)
     denom = posteriors(Y, X, res_b, res_r, res_s)
     if (log(runif(1)) < numer - denom) {
@@ -128,7 +129,7 @@ test_Y = dt %>%
 set.seed(24)
 chains = mh(train_Y, train_X, start_b = rep(0,7), 
             start_r = 0.6, start_s = 10, window_b = rep(1,7),
-            window_r = 0.02, window_s = 50, n = 1000)
+            window_r = 0.02, window_s = 150, n = 1000)
 
 ```
 
