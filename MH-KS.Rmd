@@ -61,7 +61,7 @@ mh = function(Y, X, start_b, start_r, start_s,
         res_b = proposed_b
       }
     }
-    for (m in 1:q) {
+    for (m in 1:r) {
       proposed_r = res_r
       proposed_r[m] = res_r[m] + (runif(1) - 0.5)*2*window_r[m]
       numer = posteriors(Y, X, res_b, proposed_r, res_s)
