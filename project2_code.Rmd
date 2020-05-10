@@ -2,7 +2,7 @@
 title: "Project 4 Code - Hurricane Predictions"
 author: "Margaret Gacheru, Melanie Mayer, Kee-Young Shin, Adina Zhang"
 date: "5/8/2020"
-output: html_document
+output: pdf_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -22,7 +22,8 @@ dt = read.csv("./hurrican356.csv") %>%
   separate(time, into = c("date", "time"), sep = " ") %>% 
   mutate(time = str_replace(time, "\\)", ""),
          date = str_replace(date, "\\(", ""),
-         day_of_yr = ymd(date) - ymd(paste0(Season, "-01-01"))) %>% 
+         day_of_yr = ymd(date) - ymd(paste0(year(date), "-01-01")),
+         day_of_yr = as.numeric(day_of_yr, units = "days")) %>% 
   separate(time, into = c("time", "temp", "temp2"), sep = ":") %>% 
   mutate(time = as.numeric(time)) %>% 
   select(-c(X, date, temp, temp2)) %>% 
@@ -35,7 +36,8 @@ dt = read.csv("./hurrican356.csv") %>%
          Nature = factor(Nature, 
                          levels = c("NR", "DS", "ET", "SS", "TS")),
          Nature = as.numeric(Nature)) %>% 
-  rename(year = Season)
+  rename(year = Season) %>% 
+  ungroup()
 
 ```
 
