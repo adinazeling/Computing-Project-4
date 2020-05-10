@@ -1,0 +1,46 @@
+---
+title: "HM-KS"
+author: "Kee-Young Shin"
+date: "5/10/2020"
+output: html_document
+---
+
+```{r}
+# functions for posteriors
+# use log to make it additive 
+
+rho_prior = function(rho){
+  prob = dtnorm(rho, mean = 0.5, sd = sqrt(1/5), lower = 0, upper = 1)
+  return(sum(log(prob)))
+}
+
+sigma_prior = function(sigma){
+  prob = dgamma(1/sigma, 0.001, 0.001)
+  return(log(prob))
+}
+
+beta_prior = function(beta){
+  prob = dnorm(beta, 0, 1)
+  return(sum(log(prob)))
+}
+
+loglike = function(Y, X, betas, rhos, sigma){
+  resp = as.matrix(Y)
+  X = data.matrix(X)
+  coef = rbind(betas, rhos)
+  mean = X %*% coef
+  loglik = (-0.5/sigma)*(resp - mean)^2
+  return(sum(loglik))
+}
+
+posteriors = function(Y, X, betas, rhos, sigma) {
+  loglik = loglike(Y, X, betas, rhos, sigma)
+  beta_p = beta_prior(betas)
+  rho_p = rho_prior(rhos)
+  sigma_p = sigma_prior(sigma)
+  return(rho_p + sigma_p + beta_p + loglik)
+}
+
+
+```
+
