@@ -28,6 +28,9 @@ dt= read.csv("./hurrican356.csv") %>%
          t = cumsum(t),
          diff_lat = Latitude - lag(Latitude, default = NA),
          diff_long = Longitude - lag(Longitude, default = NA),
-         diff_spd = Wind.kt - lag(Wind.kt, default = NA))
+         diff_spd = Wind.kt - lag(Wind.kt, default = NA),
+         Nature = factor(Nature, 
+                         levels = c("NR", "DS", "ET", "SS", "TS")),
+         Nature = as.numeric(Nature))
 ```
 
