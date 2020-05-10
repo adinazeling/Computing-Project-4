@@ -6,6 +6,8 @@ output: html_document
 ---
 
 ```{r}
+library(msm)
+
 # functions for posteriors
 # use log to make it additive 
 
@@ -27,7 +29,7 @@ beta_prior = function(beta){
 loglike = function(Y, X, betas, rhos, sigma){
   resp = as.matrix(Y)
   X = data.matrix(X)
-  coef = rbind(betas, rhos)
+  coef = c(betas, rhos)
   mean = X %*% coef
   # constants removed since they will be canceled out anyway 
   loglik = (-0.5/sigma)*(resp - mean)^2
@@ -45,11 +47,14 @@ posteriors = function(Y, X, betas, rhos, sigma) {
 # create MH algorithm
 mh = function(Y, X, start_b, start_r, start_s, 
               window_b, window_r, window_s, n){
+  X = X[-1]
+  Y = Y[-1]
   p = length(start_b)
   r = length(start_r)
   res_b = start_b
   res_r = start_r
   res_s = start_s
+  chain = rep(NA, n)
   chain[1] = c(start_b, start_r, start_s)
   for (i in 2:n){
     for (j in 1:p) {
@@ -63,7 +68,7 @@ mh = function(Y, X, start_b, start_r, start_s,
     }
     for (m in 1:r) {
       proposed_r = res_r
-      proposed_r[m] = res_r[m] + (runif(1) - 0.5)*2*window_r[m]
+      proposed_r[m] = res_r[m] + (runif(1) - 0.5)*2*window_r
       numer = posteriors(Y, X, res_b, proposed_r, res_s)
       denom = posteriors(Y, X, res_b, res_r, res_s)
       if (log(runif(1)) < numer - denom) {
@@ -80,5 +85,50 @@ mh = function(Y, X, start_b, start_r, start_s,
   }
   return(chain)
 }
+```
+
+```{r}
+resp = dt %>% 
+  select(Wind.kt)
+data.frame(dt)
+summary(dt)
+
+# select 80% of hurricanes as training set
+hurricanes_id = as.character(unique(dt$ID))
+train_ind = sample(1:length(hurricanes_id), 
+                   size = floor(.8*length(hurricanes_id)),
+                   replace = FALSE)
+train_hurr = hurricanes_id[train_ind]
+
+# create datasets for response and predictors for 
+# training and test sets
+train_X = dt %>%
+  filter(ID %in% train_hurr) %>%
+  mutate(intercept = 1) %>%
+  select(intercept, day, Season, Nature, 
+         diff_lat, diff_long, diff_spd, Wind.kt)
+
+train_Y = dt %>%
+  filter(ID %in% train_hurr) %>%
+  select(Wind.kt)
+
+test_X = dt %>%
+  filter(!(ID %in% train_hurr)) %>%
+  mutate(intercept = 1) %>%
+  select(intercept, day, Season, Nature, 
+         diff_lat, diff_long, diff_spd, Wind.kt)
+
+test_Y = dt %>%
+  filter(!(ID %in% train_hurr)) %>%
+  select(Wind.kt)
+
+```
+
+```{r}
+set.seed(24)
+chains = mh(train_Y, train_X, start_b = rep(0,7), 
+            start_r = 0.6, start_s = 10, window_b = rep(1,7),
+            window_r = 0.02, window_s = 50, n = 1000)
+
 ```
 
