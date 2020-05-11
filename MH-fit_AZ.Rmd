@@ -1,0 +1,150 @@
+---
+title: "MH Fit Assessment"
+author: "Adina Zhang"
+date: "May 10, 2020"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Continuing off of the MH algorithm by Steven
+
+```{r}
+set.seed(24)
+chains = mh(train_Y, train_X, start_b = rep(0,7), 
+            start_r = 0.6, start_s = 10, window_b = rep(1,7),
+            window_r = 0.02, window_s = 150, n = 5000)
+```
+
+
+## Visualization of posterior distributions and chains
+
+Based off of visualizations, it seems that a small burn-in of about 200 or 300 iterations will allow the chain to stabilize. Visualizations are based off of n = 5000.
+
+```{r}
+# Visualize posteriors and chains
+chains_dat = chains %>% as.data.frame()
+chains_dat %>% 
+  ggplot(aes(x = V1, y = V10)) +
+  geom_line() +
+  labs(x = "Index",
+       y = "Variance")
+
+chains_dat %>% 
+  ggplot(aes(x = V1, y = V9)) +
+  geom_line() + 
+  labs(x = "Index", y = "Rho")
+
+chains_dat %>% 
+  ggplot(aes(x = V1, y = V2)) +
+  geom_line() + 
+  labs(x = "Index", y = "Intercept")
+
+chains_dat %>% 
+  ggplot(aes(x = V1, y = V4)) +
+  geom_line() + 
+  labs(x = "Index", y = "Beta3")
+```
+
+```{r}
+# Visualize posterior distributions
+chains_dat %>% 
+  ggplot(aes(x = V2)) + 
+  geom_histogram() + 
+  labs(x = "Intercept")
+
+chains_dat %>% 
+  ggplot(aes(x = V10)) + 
+  geom_histogram() + 
+  labs(x = "Variance")
+
+chains_dat %>% 
+  ggplot(aes(x = V9)) + 
+  geom_histogram() + 
+  labs(x = "Rho")
+
+chains_dat %>% 
+  ggplot(aes(x = V4)) + 
+  geom_histogram() +
+  labs(x = "Beta3")
+
+chains_dat %>% 
+  ggplot(aes(x = V6)) + 
+  geom_histogram() +
+  labs(x = "Beta5")
+```
+
+## Apply burn-in
+
+```{r}
+# Remove the first 300 chain values
+burn_in_chains = chains_dat[301:dim(chains_dat[1]),]
+```
+
+```{r}
+# Visualize posteriors and chains
+burn_in_chains %>% 
+  ggplot(aes(x = V1, y = V10)) +
+  geom_line() +
+  labs(x = "Index",
+       y = "Variance")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V1, y = V9)) +
+  geom_line() + 
+  labs(x = "Index", y = "Rho")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V1, y = V2)) +
+  geom_line() + 
+  labs(x = "Index", y = "Intercept")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V1, y = V4)) +
+  geom_line() + 
+  labs(x = "Index", y = "Beta3")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V1, y = V6)) +
+  geom_line() + 
+  labs(x = "Index", y = "Beta5")
+```
+
+```{r}
+# Visualize posterior distributions
+burn_in_chains %>% 
+  ggplot(aes(x = V2)) + 
+  geom_histogram() + 
+  labs(x = "Intercept")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V10)) + 
+  geom_histogram() + 
+  labs(x = "Variance")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V9)) + 
+  geom_histogram() + 
+  labs(x = "Rho")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V4)) + 
+  geom_histogram() +
+  labs(x = "Beta3")
+
+burn_in_chains %>% 
+  ggplot(aes(x = V6)) + 
+  geom_histogram() +
+  labs(x = "Beta5")
+```
+
+## Prediction
+
+```{r}
+# Create a predict function
+# Predict wind speed at time t
+
+```
+
