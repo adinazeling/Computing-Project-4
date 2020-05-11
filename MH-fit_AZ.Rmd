@@ -18,6 +18,20 @@ chains = mh(train_Y, train_X, start_b = rep(0,7),
             window_r = 0.02, window_s = 150, n = 5000)
 ```
 
+## Unique values
+
+```{r}
+length(unique(chains[,2]))
+length(unique(chains[,3]))
+length(unique(chains[,4]))
+length(unique(chains[,5]))
+length(unique(chains[,6]))
+length(unique(chains[,7]))
+length(unique(chains[,8]))
+length(unique(chains[,9]))
+length(unique(chains[,10]))
+```
+
 
 ## Visualization of posterior distributions and chains
 
