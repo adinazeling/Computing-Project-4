@@ -86,6 +86,7 @@ mh = function(Y, X, start_b, start_r, start_s,
 ```
 
 ```{r}
+dt = dt %>% filter(!is.na(Wind.t6))
 resp = dt %>% 
   select(Wind.kt)
 data.frame(dt)
@@ -106,14 +107,12 @@ train_X = dt %>%
          diff_lat = ifelse(is.na(diff_lat), 0, diff_lat),
          diff_long = ifelse(is.na(diff_long), 0, diff_long),
          diff_spd = ifelse(is.na(diff_spd), 0, diff_spd)) %>%
-  group_by(ID) %>% 
-  mutate(wind_t = lag(Wind.kt, default = first(Wind.kt))) %>% 
-  select(intercept, day, Season, Nature, 
-         diff_lat, diff_long, diff_spd, wind_t)
+  select(intercept, day_of_yr, year, Nature, 
+         diff_lat, diff_long, diff_spd, Wind.kt) 
 
 train_Y = dt %>%
   filter(ID %in% train_hurr) %>%
-  select(Wind.kt)
+  select(Wind.t6)
 
 test_X = dt %>%
   filter(!(ID %in% train_hurr)) %>%
@@ -123,7 +122,7 @@ test_X = dt %>%
 
 test_Y = dt %>%
   filter(!(ID %in% train_hurr)) %>%
-  select(Wind.kt)
+  select(Wind.t6)
 
 ```
 

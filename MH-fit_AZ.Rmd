@@ -154,7 +154,7 @@ burn_in_chains %>%
   labs(x = "Beta5")
 ```
 
-## Prediction
+## Prediction and Inference
 
 ```{r}
 # Take average of coefficients
@@ -163,8 +163,45 @@ beta_avg = burn_in_chains %>% summarise_at(c("V2", "V3", "V4", "V5", "V6", "V7",
 rho_avg = burn_in_chains %>% summarise_at("V9", mean, na.rm = T)
 sigma_avg = burn_in_chains %>% summarise_at("V10", mean, na.rm = T)
 
-# Create a predict function
+# 95% CI
+beta_avg_l95 = burn_in_chains %>% summarise_at(c("V2", "V3", "V4", "V5", "V6", "V7", "V8"), 
+                                               quantile, 0.0275, na.rm = T)
+beta_avg_u95 = burn_in_chains %>% summarise_at(c("V2", "V3", "V4", "V5", "V6", "V7", "V8"), 
+                                               quantile, 0.975, na.rm = T)
+
+rho_avg_l95 = burn_in_chains %>% summarise_at("V9", quantile, 0.0275, na.rm = T)
+rho_avg_u95 = burn_in_chains %>% summarise_at("V9", quantile, 0.975, na.rm = T)
+
+sig_avg_l95 = burn_in_chains %>% summarise_at("V10", quantile, 0.0275, na.rm = T)
+sig_avg_u95 = burn_in_chains %>% summarise_at("V10", quantile, 0.975, na.rm = T)
+
 # Predict wind speed at time t
+par = unlist(c(beta_avg, rho_avg))
+
+# Test data
+test_X = dt %>%
+  filter(!(ID %in% train_hurr)) %>%
+  mutate(intercept = 1) %>%
+  select(intercept, day_of_yr, year, Nature, 
+         diff_lat, diff_long, diff_spd, Wind.kt)
+
+test_Y = dt %>%
+  filter(!(ID %in% train_hurr)) %>%
+  select(Wind.t6)
+
+test.fit = data.matrix(test_X) %*% par
+test.res = test_Y - test.fit
+
+# Pull IDs from original data
+test.hurricanes = dt %>%
+  filter(!(ID %in% train_hurr)) %>%
+  select(ID)
+# Data set with Predicted and Accurate values
+hurricane_predict = tibble(
+  id = test.hurricanes,
+  test_Y = test_Y,
+  pred_Y = test.fit
+)
 
 ```
 
