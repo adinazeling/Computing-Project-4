@@ -87,10 +87,6 @@ mh = function(Y, X, start_b, start_r, start_s,
 
 ```{r}
 dt = dt %>% filter(!is.na(Wind.t6))
-resp = dt %>% 
-  select(Wind.kt)
-data.frame(dt)
-summary(dt)
 
 # select 80% of hurricanes as training set
 hurricanes_id = as.character(unique(dt$ID))
