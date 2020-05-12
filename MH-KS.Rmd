@@ -106,8 +106,10 @@ train_X = dt %>%
          diff_lat = ifelse(is.na(diff_lat), 0, diff_lat),
          diff_long = ifelse(is.na(diff_long), 0, diff_long),
          diff_spd = ifelse(is.na(diff_spd), 0, diff_spd)) %>%
-  select(intercept, day_of_yr, year, Nature, 
-         diff_lat, diff_long, diff_spd, Wind.kt)
+  group_by(ID) %>% 
+  mutate(wind_t = lag(Wind.kt, default = first(Wind.kt))) %>% 
+  select(intercept, day, Season, Nature, 
+         diff_lat, diff_long, diff_spd, wind_t)
 
 train_Y = dt %>%
   filter(ID %in% train_hurr) %>%
