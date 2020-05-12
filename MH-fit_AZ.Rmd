@@ -13,9 +13,9 @@ Continuing off of the MH algorithm by Steven
 
 ```{r}
 set.seed(24)
-chains = mh(train_Y, train_X, start_b = rep(0,7), 
-            start_r = 0.6, start_s = 10, window_b = rep(1,7),
-            window_r = 0.02, window_s = 150, n = 5000)
+chains = mh(train_Y, train_X, start_b = rep(2,7), 
+            start_r = 0.6, start_s = 10, window_b = rep(3,7),
+            window_r = 0.02, window_s = 150, n = 10000)
 ```
 
 ## Unique values
@@ -94,7 +94,7 @@ chains_dat %>%
 
 ```{r}
 # Remove the first 300 chain values
-burn_in_chains = chains_dat[301:dim(chains_dat[1]),]
+burn_in_chains = chains_dat[501:dim(chains_dat[1]),]
 ```
 
 ```{r}
@@ -157,6 +157,12 @@ burn_in_chains %>%
 ## Prediction
 
 ```{r}
+# Take average of coefficients
+beta_avg = burn_in_chains %>% summarise_at(c("V2", "V3", "V4", "V5", "V6", "V7", "V8"), 
+                                           mean, na.rm = T)
+rho_avg = burn_in_chains %>% summarise_at("V9", mean, na.rm = T)
+sigma_avg = burn_in_chains %>% summarise_at("V10", mean, na.rm = T)
+
 # Create a predict function
 # Predict wind speed at time t
 
