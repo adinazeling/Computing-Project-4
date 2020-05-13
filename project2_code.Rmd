@@ -27,6 +27,7 @@ dt = read.csv("./hurrican356.csv") %>%
   separate(time, into = c("time", "temp", "temp2"), sep = ":") %>% 
   mutate(time = as.numeric(time)) %>% 
   select(-c(X, date, temp, temp2)) %>% 
+  filter(time %in% c(0, 6, 12, 18)) %>% 
   group_by(ID) %>% 
   mutate(t = 1,
          t = (cumsum(t) - 1) * 6,
