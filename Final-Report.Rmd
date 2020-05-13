@@ -53,6 +53,7 @@ The following prior distributions were assumed:
 $\pi(\boldsymbol{\beta})$ is jointly normal with mean 0 and variance $diag(1,p)$, $\pi(\rho_j)$ follows a truncated normal  $N_{[0,1]}(0.5, 1/5)$, and $\pi(\sigma^{-2})$ follows an inverse-gamma $(0.001, 0.001)$. 
 
 ## Metropolis-Hastings Algorithm
+
 To estimate the parameters, a component-wise Metropolis-Hastings (MH) algorithm was suggested, with a uniform proposal for $\beta$ and $\rho$, and a inverse-gamma proposal for $\sigma^2$. The MH algorithm constructs a Markov chain by accepting candidate points with probability 
 $$\alpha(y|x^{(t)})=min(1,\frac{\pi(y)q(x^{(t)}|y)}{\pi(x^{(t)})q(y|x^{(t)})})$$
 The random-walk Metropolis is a special class where the proposed transition q is symmetric. As a result, the acceptance probability is only related to $\pi(y)$, in our case the prior distributions and the likelihood. The response wind speed was assumed to follow a normal distribution and the log-likelihood could be expressed as 
