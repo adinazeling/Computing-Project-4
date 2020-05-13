@@ -94,11 +94,7 @@ chains_dat %>%
 ## Apply burn-in
 
 ```{r}
-<<<<<<< HEAD
 # Remove the first 2000 chain values
-=======
-# Remove the first 300 chain values
->>>>>>> 546942f0d2aa411ad47bb40b2e6fc52ee72a474d
 burn_in_chains = chains_dat[2001:dim(chains_dat)[1],]
 ```
 
@@ -170,14 +166,14 @@ sigma_avg = burn_in_chains %>% summarise_at("V10", mean, na.rm = T)
 
 # 95% CI
 beta_avg_l95 = burn_in_chains %>% summarise_at(c("V2", "V3", "V4", "V5", "V6", "V7", "V8"), 
-                                               quantile, 0.0275, na.rm = T)
+                                               quantile, 0.025, na.rm = T)
 beta_avg_u95 = burn_in_chains %>% summarise_at(c("V2", "V3", "V4", "V5", "V6", "V7", "V8"), 
                                                quantile, 0.975, na.rm = T)
 
-rho_avg_l95 = burn_in_chains %>% summarise_at("V9", quantile, 0.0275, na.rm = T)
+rho_avg_l95 = burn_in_chains %>% summarise_at("V9", quantile, 0.025, na.rm = T)
 rho_avg_u95 = burn_in_chains %>% summarise_at("V9", quantile, 0.975, na.rm = T)
 
-sig_avg_l95 = burn_in_chains %>% summarise_at("V10", quantile, 0.0275, na.rm = T)
+sig_avg_l95 = burn_in_chains %>% summarise_at("V10", quantile, 0.025, na.rm = T)
 sig_avg_u95 = burn_in_chains %>% summarise_at("V10", quantile, 0.975, na.rm = T)
 
 # Table of parameters

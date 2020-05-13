@@ -9,8 +9,8 @@ editor_options:
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-
-
+library(corrplot)
+library(ModelMetrics)
 ```
 
 Read in data:
@@ -21,7 +21,9 @@ preds <- read.csv("./preds2.csv") %>%
   group_by(ID) %>% 
   mutate(t = 1,
          t = (cumsum(t) - 1) * 6) %>% 
-  rename(resids = Wind.t6.1)
+  rename(resids = Wind.t6.1) %>% 
+  ungroup(ID) %>% 
+  mutate(ID = factor(ID))
 
 length(levels(preds$ID))
 #Test set:71 hurricanes
@@ -261,10 +263,23 @@ preds %>%
                  alpha = .2) + 
   labs(title="", x="Residuals", y="Count") + 
   theme_bw()
+
 ```
 
+MSE:
+
+```{r}
+preds %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="", x="Residuals", y="Count") + 
+  theme_bw()
 
 
-
+resids.no.na <- preds %>% filter(!is.na(preds))
+mse(resids.no.na$Wind.t6, resids.no.na$preds)
+```
 
 
