@@ -94,7 +94,11 @@ chains_dat %>%
 ## Apply burn-in
 
 ```{r}
+<<<<<<< HEAD
+# Remove the first 2000 chain values
+=======
 # Remove the first 300 chain values
+>>>>>>> 546942f0d2aa411ad47bb40b2e6fc52ee72a474d
 burn_in_chains = chains_dat[2001:dim(chains_dat)[1],]
 ```
 
@@ -216,7 +220,7 @@ hurricane_predict = tibble(
   pred_Y = test.fit
 )
 
-preds <- cbind(id = test.hurricanes, test_X, true = test_Y, preds = test.fit)
-write.csv(test, "./preds2.csv")
+preds <- cbind(id = test.hurricanes, test_X, true = test_Y, preds = test.fit, res = test.res)
+write.csv(preds, "./preds2.csv")
 ```
 
