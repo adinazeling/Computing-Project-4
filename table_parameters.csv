@@ -1,10 +1,10 @@
 Parameters,Posterior Mean,L95%,U95%
-Intercept,38.55,38.5,38.57
-Day of Year,0.88,0.8,1.05
-Year,-0.17,-0.17,-0.16
-Nature/Type,17.65,11.02,20.29
-Diff Lat,4.78,4.03,5.48
-Diff Long,-0.12,-1.5,0.46
-Diff Wind,0.48,0.43,0.55
-Rho,0.85,0.79,0.89
+Intercept,38.56,38.54,38.57
+Day of Year,0.85,0.78,1
+Year,-0.16,-0.17,-0.16
+Nature/Type,16.64,12.25,18.63
+Diff Lat,6.77,6.23,7.35
+Diff Long,-0.72,-1.63,-0.26
+Diff Wind,0.46,0.41,0.52
+Rho,0.88,0.84,0.92
 Sigma,37.37,35.01,39.11
