@@ -94,7 +94,7 @@ chains_dat %>%
 
 ```{r}
 # Remove the first 300 chain values
-burn_in_chains = chains_dat[501:dim(chains_dat[1]),]
+burn_in_chains = chains_dat[2001:dim(chains_dat[1]),]
 ```
 
 ```{r}
@@ -174,6 +174,18 @@ rho_avg_u95 = burn_in_chains %>% summarise_at("V9", quantile, 0.975, na.rm = T)
 
 sig_avg_l95 = burn_in_chains %>% summarise_at("V10", quantile, 0.0275, na.rm = T)
 sig_avg_u95 = burn_in_chains %>% summarise_at("V10", quantile, 0.975, na.rm = T)
+
+# Table of parameters
+par_avg = cbind(beta_avg, rho_avg, sigma_avg) %>% round(digits = 2)
+par_l95 = cbind(beta_avg_l95, rho_avg_l95, sig_avg_l95) %>% round(digits = 2)
+par_u95 = cbind(beta_avg_u95, rho_avg_u95, sig_avg_u95) %>% round(digits = 2)
+parameters = c("Intercept", "Day of Year", "Year", "Nature/Type", 
+               "Diff Lat", "Diff Long", "Diff Wind", "Rho", "Sigma")
+
+par_table = cbind(parameters, t(par_avg), t(par_l95), t(par_u95)) %>% as.data.frame()
+names(par_table) = c("Parameters", "Posterior Mean", "L95%", "U95%")
+row.names(par_table) = c()
+write_csv(par_table, "table_parameters.csv")
 
 # Predict wind speed at time t
 par = unlist(c(beta_avg, rho_avg))
