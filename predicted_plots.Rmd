@@ -1,0 +1,26 @@
+---
+title: "Prediction Plots: Test Set"
+author: "Melanie Mayer"
+date: "5/12/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+
+
+```
+
+Data Manipulations
+
+```{r}
+preds_orig <- read.csv("./hurricane_predictions.csv")
+preds <- read.csv("./preds2.csv") %>% 
+  group_by(ID) %>% 
+  mutate(t = 1,
+         t = (cumsum(t) - 1) * 6)
+
+```
+

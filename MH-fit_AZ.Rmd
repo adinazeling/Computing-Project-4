@@ -203,5 +203,7 @@ hurricane_predict = tibble(
   pred_Y = test.fit
 )
 
+preds <- cbind(id = test.hurricanes, test_X, true = test_Y, preds = test.fit)
+write.csv(test, "./preds2.csv")
 ```
 
