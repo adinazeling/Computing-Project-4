@@ -62,9 +62,12 @@ $\pi(\boldsymbol{\beta})$ is jointly normal with mean 0 and variance $diag(1,p)$
 
 To estimate the parameters, a random walk Metropolis-Hastings (MH) algorithm with component wise updates was utiliized, with a uniform proposal for $\beta$ and $\rho$, and a inverse-gamma proposal for $\sigma^2$. The MH algorithm constructs a Markov chain by accepting candidate points with probability 
 $$\alpha(y|x^{(t)})=min(1,\frac{\pi(y)q(x^{(t)}|y)}{\pi(x^{(t)})q(y|x^{(t)})})$$
-The random-walk Metropolis is a special class where the proposed transition q is symmetric. As a result, the acceptance probability is only related to $\pi(y)$, i.e. prior distributions and the likelihood. The response wind speed was assumed to follow a normal distribution and the log-likelihood could be expressed as 
+We used the uniform distribution as random-walk for the proposal. The random-walk Metropolis is a special class where the proposed transition q is symmetric. As a result, the acceptance probability is only related to the prior distributions and the likelihood. The response wind speed was assumed to follow a normal distribution and the log-likelihood could be expressed as 
 $$l(\beta, \rho)=-\frac{n}{2}log(2\pi)-nlog(\sigma)-\frac{1}{2\sigma^2}\sum^n_{i=1}(y-X^T\beta-\rho Y)^2$$
 The partial posterior distribution can be formed by the product of the log-likelihood and the priors. For the MH algorithm, a burn in was incorporated to ensure analysis of a stationary distribution.
+Additionally, we utlized component-wise MH in which the parameters are updated one by one rather than simultaneously. 
+
+The window a defines the space with which we will do the random-walk. Tuning these window parameters can help with efficiency of the algorithm. The windows were chosen in a way that the probability of acceptance for each of the parameters were close to the range of 30 to 70%. The windows for the betas from $\beta_0$ to $\beta_6$ were 0.13, 0.001, 0.001, 0.08, 0.1, 0.2, and 0.05, respectively. The start values are not as crucial since the MH algorithm will allow for convergence after certain number of steps. For our project, the start values for the betas, rho, and sigma were 2, 0.6, and 10.
 
 ## Results
 
