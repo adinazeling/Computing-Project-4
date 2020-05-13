@@ -26,7 +26,17 @@ Unlike frequentist approaches, Bayesian analysis treats parameters as random var
 $$ \pi(\theta|x) = \cfrac{f(x|\theta) \pi(\theta)}{m(x)} = 
 \cfrac{f(x|\theta) \pi(\theta)}{\int f(x|\theta) \pi(\theta) d\theta}$$
 
-Obtaining the posterior distribution is often a difficult task -- either there is no closed form or it is computationally intensive to directly sample from $\pi(\theta|x)$. Therefore, MCMC is used to create a Markov chain of the parameter of interest such that their distribution converge to the posterior. 
+Obtaining the posterior distribution is often a difficult task -- either there is no closed form or it is computationally intensive to directly sample from $\pi(\theta|x)$. Therefore, MCMC is used to create a Markov chain of the parameter of interest such that their distribution converge to the posterior. A markov chain is a sequence of vectors $X_1, X_2,...,X_n$ such that the distribution of $X_{i+1}$ depends on only the recent past $X_{i}$. In the long run, the sequence generated will be drawn from a stationary distribution, which is the target distribution we want to sample from. The general steps for MCMC include 
+
+1. Generate the next sequence for time $t_i$ from the proposal distribution: $\theta \sim q(\theta_i|\theta_{i-1})$
+
+2. Calculate the ratio: $r(\theta_{new}, \theta_{t-1}) = \cfrac{Posterior(\theta_{new})}{Posterior_{\theta_{t-1}}}$
+
+3. Find the accpetance probability: $\alpha(\theta_{new}, \theta_{t-1}) = min[1, r(\theta_{new}, \theta_{t-1})]$
+
+4. Draw $u \sim uniform(0,1)$. If $u < \alpha(\theta_{new}, \theta_{t-1})$, then $\theta_{t} = \theta_{new}$. Otherwise $\theta_{t} = \theta_{t-1}$
+
+There are two approaches to the MCMC algorithm: Gibbs sampling and Metropolis-Hastings. Gibbs sampling is a special case of Metropolis-Hastings when the probability of acceptance is 1. Gibbs sampling involves estimating the stationary distribution by samplling from conditional distributions of the parameters. In our case, since we do not have the conditional distributions of each parameter, we chose to use a Metropolis-Hastings algorithm.
 
 ## Hurricane Bayesian Model
 
