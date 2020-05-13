@@ -131,3 +131,25 @@ chains = mh(train_Y, train_X, start_b = rep(0,7),
 chains[1000,]
 ```
 
+
+```{r}
+set.seed(24)
+chains = mh(train_Y, train_X, start_b = rep(2,7), 
+            start_r = 0.6, start_s = 10, 
+            window_b = c(0.13, 0.001, 0.001, 0.1, 0.1,0.2,0.05),
+            window_r = 0.02, window_s = 150, n = 5000)
+```
+
+## Unique values
+
+```{r}
+length(unique(chains[,2]))/5000
+length(unique(chains[,3]))/5000
+length(unique(chains[,4]))/5000
+length(unique(chains[,5]))/5000
+length(unique(chains[,6]))/5000
+length(unique(chains[,7]))/5000
+length(unique(chains[,8]))/5000
+length(unique(chains[,9]))
+length(unique(chains[,10]))
+```
