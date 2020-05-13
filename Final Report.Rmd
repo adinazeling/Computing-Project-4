@@ -44,7 +44,7 @@ $\pi(\boldsymbol{\beta})$ is jointly normal with mean 0 and variance $diag(1,p)$
 
 ## MH Algorithm
 To estimate the parameters, a component-wise Metropolis-Hastings algorithm was suggested, with a uniform proposal for $\beta$ and $\rho$, and a inverse-gamma proposal for $\sigma^2$. The MH algorithm constructs a Markov chain by accepting candidate points with probability 
-$$\alpha(y|x^{(t)}=min(1,\frac{\pi(y)q(x^{(t)}|y)}{\pi(x^{(t)})q(y|x^{(t)})})$$
+$$\alpha(y|x^{(t)})=min(1,\frac{\pi(y)q(x^{(t)}|y)}{\pi(x^{(t)})q(y|x^{(t)})})$$
 The random-walk Metropolis is a special class where the proposed transition q is symmetric. As a result, the acceptance probability is only related to $\pi(y)$, i.e. prior distributions. The response wind speed was assumed to follow a normal distribution and the log-likelihood could be expressed as 
 $$l(\beta, \rho)=-\frac{n}{2}log(2\pi)-nlog(\sigma)-\frac{1}{2\sigma^2}\sum^n_{i=1}(y-X^T\beta-\rho Y)^2$$
 The partial posterior distribution can be formed by the product of the log-likelihood and the priors. For the MH algorithm, a burn in was incorporated to ensure analysis of a stationary distribution.
