@@ -76,8 +76,9 @@ chains_dat %>%
 
 chains_dat %>% 
   ggplot(aes(x = V9)) + 
-  geom_histogram() + 
-  labs(x = "Rho")
+  geom_histogram() +
+  labs(x = "Rho") + 
+  theme_bw()
 
 chains_dat %>% 
   ggplot(aes(x = V4)) + 
@@ -94,7 +95,7 @@ chains_dat %>%
 
 ```{r}
 # Remove the first 300 chain values
-burn_in_chains = chains_dat[2001:dim(chains_dat[1]),]
+burn_in_chains = chains_dat[2001:dim(chains_dat)[1],]
 ```
 
 ```{r}
