@@ -13,14 +13,258 @@ library(tidyverse)
 
 ```
 
-Data Manipulations
+Read in data:
 
 ```{r}
 preds_orig <- read.csv("./hurricane_predictions.csv")
 preds <- read.csv("./preds2.csv") %>% 
   group_by(ID) %>% 
   mutate(t = 1,
-         t = (cumsum(t) - 1) * 6)
+         t = (cumsum(t) - 1) * 6) %>% 
+  rename(resids = Wind.t6.1)
+
+length(levels(preds$ID))
+#Test set:71 hurricanes
+
+#Pick hurricanes with most data points
+preds %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n)) 
 
 ```
+
+
+Create plot:
+
+```{r}
+preds %>% 
+  filter(ID == "FELIX.1995") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.5, se = F) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Felix (1995)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+    scale_color_manual(labels = c("Predicted", "Obseved") , values = c("lightblue", "red")) + 
+  theme_bw()
+
+
+preds %>% 
+  filter(ID == "FELIX.1995") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="Felix 1995", x="Residuals", y="Count") + 
+  theme_bw()
+
+
+preds %>% 
+  filter(ID == "DENNIS.1999") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.5, se = F) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Dennis (1999)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+    scale_color_manual(labels = c("Predicted", "Obseved") , values = c("lightblue", "red")) + 
+  theme_bw()
+
+
+preds %>% 
+  filter(ID == "DENNIS.1999") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="Felix 1995", x="Residuals", y="Count") + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "FELIX.1989") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Felix (1989)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+  scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "FELIX.1989") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title=" ", x="Residuals", y="Count") + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "IKE.2008") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Ike (2008)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+    scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "IKE.2008") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title=" ", x="Residuals", y="Count") + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "IRENE.2005") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.5, se = F) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Irene (2005)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+    scale_color_manual(labels = c("Predicted", "Obseved") , values = c("lightblue", "red"))
+
+preds %>% 
+  filter(ID == "IRENE.2005") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="Irene 2005", x="Residuals", y="Count") + 
+  theme_bw()
+
+
+preds %>% 
+  filter(ID == "NOEL.2007") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Noel (2007)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+  scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "NOEL.2007") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="", x="Residuals", y="Count") + 
+  theme_bw()
+
+
+preds %>% 
+  filter(ID == "ANDREA.2013") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Andrea (2013)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+  scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "ANDREA.2013") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="", x="Residuals", y="Count") + 
+  theme_bw()
+
+
+preds %>% 
+  filter(ID == "MATTHEW.2010") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Matthew (2010)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+  scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "MATTHEW.2010") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="", x="Residuals", y="Count") + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "CINDY.1993") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Cindy (1993)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+  scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "CINDY.1993") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="", x="Residuals", y="Count") + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "GUSTAV.2008") %>% 
+  gather(key = type, value = wind.speed, c("preds", "Wind.t6")) %>% 
+  ggplot(aes(x = t, y = wind.speed, group = type, colour = type)) + 
+  geom_smooth(alpha = 0.35, se = F, size = 0.65) +
+  geom_point(alpha = 0.5) + 
+      labs(title = "Hurricane Gustav (2008)",
+           x = "Time",
+         y = "Wind Speed",
+         color = "") + 
+  scale_color_manual(labels = c("Predicted", "Obseved") , values = c("purple", "red")) + 
+  theme_bw()
+
+preds %>% 
+  filter(ID == "GUSTAV.2008") %>% 
+  ggplot(aes(x = resids)) + 
+  geom_histogram(col="blue", 
+                 fill="blue", 
+                 alpha = .2) + 
+  labs(title="", x="Residuals", y="Count") + 
+  theme_bw()
+```
+
+
+
+
+
 
