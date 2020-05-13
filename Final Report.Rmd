@@ -17,11 +17,21 @@ Hurricanes are type of storms with high speed winds that form over tropical or s
 For this project, we have information about 356 hurricanes in the North Atlantic area since 1989, including the storm's location and maximum windspeed for every 6 hours. Additionally, the dataset includes information about season and month which hurricane occured, nature of the hurricane, and timing of the storm. We are interested in building a bayesian model in order to predict hurricane trajectories, particularly the wind speed at a specific time point. We will utilize Markov Chain Monte-Carlo to estimate the model parameters and their 95% credible intervals through the posterior distributions. Furthermore, we are interested in evaluating our model's ability to accurately predict windspeed and track the hurricanes.
 
 
-
 # Methods 
 
+## Bayesian and MCMC Basics
+
+Unlike frequentist approaches, Bayesian analysis treats parameters as random variables and utilizes prior beliefs about the parameters. We start out with a prior distribution then update it with observed data to obtain the posterior distribution. With the posterior distribution, we can obtain parameters estimates, such, as posterior mean. Bayes Theorem allows us to observe the relationship between prior distribution ($\pi(x)$), likelihood ($f(x|\theta)$), and posterior distribution ($\pi(\theta|x)$)
+
+$$ \pi(\theta|x) = \cfrac{f(x|\theta) \pi(\theta)}{m(x)} = 
+\cfrac{f(x|\theta) \pi(\theta)}{\int f(x|\theta) \pi(\theta) d\theta}$$
+
+Obtaining the posterior distribution is often a difficult task -- either there is no closed form or it is computationally intensive to directly sample from $\pi(\theta|x)$. Therefore, MCMC is used to create a Markov chain of the parameter of interest such that their distribution converge to the posterior. 
+
+## Hurricane Bayesian Model
+
 The Bayesian model used to predict hurricane trajectories can be expressed as follows:
-$Y_i(t+6)=\mu_i(t)+\rho_jY_i(t)+\epsilon_i(t)$
+$Y_i(t+6)=\mu_i(t)+\rho_iY_i(t)+\epsilon_i(t)$
 where $\rho_j$ is the autoregressive correlation and the error $\epsilon_i$ follows the normal distribution with mean 0 and variance $\sigma^2$ independent across t. $\mu_i(t)$ represents the function mean that can be written as follows:
 $$\mu_i(t) = \beta_0+\beta_1x_{i,1}(t)+\beta_2x_{i,2}(t)+\beta_3x_{i,3}(t)+\sum^3_{k=1}\beta_{3+k}\triangle_{i,k}(t-6)$$
 where $x_{i,1}(t)$, $x_{i,2}(t)$, and $x_{i,3}(t)$ are the day of the year, calendar year, and type of hurricane at time t, respectively. 
