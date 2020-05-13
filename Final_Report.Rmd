@@ -1,12 +1,16 @@
 ---
-title: "Report"
+title: "Hurricane Predictions Using a MCMC Algorithm"
 author: "Margaret Gacheru, Melanie Mayer, Kee-Young Shin, Adina Zhang"
 date: "May 10, 2020"
 output: pdf_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(knitr)
 ```
 
 
@@ -41,7 +45,7 @@ There are two approaches to the MCMC algorithm: Gibbs sampling and Metropolis-Ha
 
 ### Hurricane Bayesian Model
 
-The Bayesian model used to predict hurricane trajectories can be expressed as follows:
+The Bayesian model used to predict hurricane wind speeds can be expressed as follows:
 $Y_i(t+6)=\mu_i(t)+\rho_iY_i(t)+\epsilon_i(t)$
 where $\rho_j$ is the autoregressive correlation and the error $\epsilon_i$ follows the normal distribution with mean 0 and variance $\sigma^2$ independent across t. $\mu_i(t)$ represents the function mean that can be written as follows:
 $$\mu_i(t) = \beta_0+\beta_1x_{i,1}(t)+\beta_2x_{i,2}(t)+\beta_3x_{i,3}(t)+\sum^3_{k=1}\beta_{3+k}\triangle_{i,k}(t-6)$$
@@ -63,14 +67,64 @@ The partial posterior distribution can be formed by the product of the log-likel
 
 ## Results
 
+In order to test our predictions, we ran the MH algorithm on 80% of the hurricanes in our data, using 10,000 steps. We then explored the convergence plots in order to assure we achieved convergence and to choose a proper cut-off to consider as the burn-in steps. An example of such plots can be seen in Figure 1. Here we see a steady incline from 0 to around 2000 until it begins to fluctuate around 0.85. We therefore choose to use step 2000 as our burn-in and used steps 2001-10,000 to estimate our parameter distribution. The same was done for all parameters. 
 
-# Discussion
+Our final posterior means and their respective credible intervals (CI) can be found in Table 1. The CI are found by taking the 2.5th and 97.5th quantiles of the posterior distribution of each parameter. We see most of the intervals are narrow, an indication that the spread is small and only marginally fluctuates around the mean. Nature/type has the largest mean and widest CI (estimate: 17.14, CI: 11.24, 19.89), having a larger impact on our predictions. The means of the variables for the changes from time $t$ to $t + 6$ (i.e. latitude, longitude, windspeed) tend to be much smaller. This is in accord with intuition, we would not expect to see major changes in six hours time. Interestingly, difference in longitudinal mapping has a null effect on the predictions (estimate: 0.00, CI: -1.32, 0.72) while difference in latitudinal mapping has a large effect (estimate: 5.29, CI: 4.66, 5.82). It appears hurricanes' lattitude shift has more predictive ability on windspeeds.
 
-- data recorded at time periods less than 6 hrs apart
+To check how accurate our predictions were, we ran our model on the testing dataset (20% of the hurricanes). We found a root mean squared error of 40.13. To put this on the scale of wind speed, the mean wind speed is 48.06 (25th quantile = 30, 75th quantile = 60). Therefore this this is a large deviation from the true value. However, in Figure 2 we can see the distribution of these residuals. We find they are centered around zero, as we would like. The distribution is right skewed, causing this non-zero RMSE. Our model has a higher tendency to overpredict wind speed compared to under prediction.
 
-- choice of proposal distribution: we used uniform, could try something else with an appropriate support
+We further explored our predictions by looking at the models ability to predict each hurricanes' wind speed longitudinally. Figure 3 shows how our model performed on four different hurricanes in our testing data set. For hurricanes Felix and Ike our model appears to perform well. The predicted wind speed is very close to the observed wind speed. There is no systematic under/over prediction occuring such that the residuals would not be centered around zero, as we see for hurricane Andrea. We are systematically underpredicting the windspeed and the residuals are centered around 70 for hurricane Andrea, although the trajectory of the windspeed is roughly correctly modeled. For hurricane Noel, on the other hand, the trajectory of the wind speed is not correctly modeled.
 
 
+## Discussion
 
+Modeling hurricane wind speeds is an important yet difficult task. Our model aims to get close predictions using an MCMC algorithm . We find that for many hurricanes we are able to get close predictions using this model, although it varies greatly across hurricanes. It would be of interest to further explore the differences in the features of the correctly predicted hurricanes versus the incorrectly predicted hurricanes in order to have more certainty in the accuracy of our model. 
+
+We used data from six hours prior to time $t$ to inform the predictions at time $t$, creating a model that updates with the progression of the hurricane in real time. However, we found that there was some data recorded at time periods less than 6 hours apart. This made it such that the recordings of some hurricanes were not comparable to the others and we could not use them in training our model.
+
+In order to use a Bayesian approach in modeling we had to impose a prior distribution on our parameters of interest. A test to see how sensitive our model is to our prior distributions may inform on the stability of our model and can add value. A choice of priors proposal distribution was also made, we used a uniform distribution. We could try another distribution with an appropriate support to see if our predictions perform better.
+
+\newpage
 
 ## Appendix
+
+*Figure 1. Convergence plot for rho estimate* 
+
+```{r, echo = FALSE, out.width="50%", fig.width = 3}
+myimages<-list.files("rw_images/", pattern = ".jpeg", full.names = TRUE)
+include_graphics(myimages)
+```
+
+
+
+*Table 1. Parameter estimates and credible intervals* 
+
+```{r, echo = FALSE}
+read.csv("table_parameters.csv") %>% 
+  knitr::kable()
+```
+
+\newpage
+*Figure 2. Histogram of Residuals on Testing Dataset*
+
+```{r, echo = FALSE, out.width="50%", fig.align = 'center'}
+include_graphics("./residual_plot.png")
+```
+
+\newpage
+
+*Figure 3. Wind Speed Predictions over Time*
+
+```{r, echo = FALSE, out.width="50%", fig.width = 4}
+myimages<-list.files("projectory_images/", pattern = ".png", full.names = TRUE)
+include_graphics(myimages)
+```
+
+
+
+\newpage
+
+## Code
+
+
+
