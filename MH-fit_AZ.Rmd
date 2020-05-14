@@ -95,7 +95,7 @@ chains_dat %>%
 
 ```{r}
 # Remove the first 2000 chain values
-burn_in_chains = chains_dat[2001:dim(chains_dat)[1],]
+burn_in_chains = chains_dat[10001:dim(chains_dat)[1],]
 ```
 
 ```{r}
